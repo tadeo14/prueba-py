@@ -1,6 +1,8 @@
 import os
 import sqlite3
 from tabulate import tabulate
+import requests
+
 
 def pedir_entero(mensaje):
     """
@@ -32,16 +34,32 @@ def guardar(i,n,p):
 
 
 def mostrar():
+    r =  requests.get("https://dolarapi.com/v1/dolares/blue") #traemos los valores del dolar blue
+    d = r.json() #volcamos esos valores en un diccionario
+    dolar_texto = d["venta"]
+    # dolar_texto = dolar_texto.replace(",",".")
+    dolar = float(dolar_texto)
+
+
     conn = sqlite3.connect("comercio.sqlite")
     cursor = conn.cursor()
     try:
         cursor.execute("SELECT * FROM productos")
         datos = cursor.fetchall()
+        nueva = []
+        pesos = 0
+        for n in datos:
+            pesos = n[-1] * dolar 
+            nueva.append([n[0],n[1],pesos])
+
+
+
+
     except (sqlite3.ProgrammingError,sqlite3.OperationalError):
-        datos = None
+        nueva = None
     conn.commit()
     conn.close()
-    return datos
+    return nueva
 
 
 ########################################################################
