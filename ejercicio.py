@@ -52,9 +52,6 @@ def mostrar():
             pesos = n[-1] * dolar 
             nueva.append([n[0],n[1],pesos])
 
-
-
-
     except (sqlite3.ProgrammingError,sqlite3.OperationalError):
         nueva = None
     conn.commit()
